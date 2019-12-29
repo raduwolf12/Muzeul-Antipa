@@ -15,6 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="OBJ_Loader.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="Explorare-muzeu-Antipa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

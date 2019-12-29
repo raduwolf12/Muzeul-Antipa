@@ -17,16 +17,17 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-
+#include "OBJ_Loader.h"
 #pragma comment (lib, "glfw3dll.lib")
 #pragma comment (lib, "glew32.lib")
 #pragma comment (lib, "OpenGL32.lib")
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 1000;
 bool rot = false;
-
+objl::Loader Loader;
+//bool loadout = Loader.LoadFile("duck.obj");
 enum ECameraMovementType
 {
 	UNKNOWN,
@@ -416,6 +417,7 @@ void processInput(GLFWwindow* window);
 void renderScene(const Shader& shader);
 void renderCube();
 void renderFloor();
+void renderDodo();
 
 // timing
 double deltaTime = 0.0f;    // time between current frame and last frame
@@ -432,6 +434,75 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rot = false;
 	}
 
+}
+
+GLuint VAO, VBO, EBO;
+void CreateVBO()
+{
+	float vertices[] = {
+-1, -1, 1,0, 0, 1,0.375, 0,
+1, -1, 1,0, 0, 1,0.625, 0,
+1, 1, 1,0, 0, 1,0.625, 0.25,
+-1, 1, 1,0, 0, 1,0.375, 0.25,
+-1, 1, 1,0, 1, 0,0.375, 0.25,
+1, 1, 1,0, 1, 0,0.625, 0.25,
+1, 1, -1,0, 1, 0,0.625, 0.5,
+-1, 1, -1,0, 1, 0,0.375, 0.5,
+-1, 1, -1,0, 0, -1,0.375, 0.5,
+1, 1, -1,0, 0, -1,0.625, 0.5,
+1, -1, -1,0, 0, -1,0.625, 0.75,
+-1, -1, -1,0, 0, -1,0.375, 0.75,
+-1, -1, -1,0, -1, 0,0.375, 0.75,
+1, -1, -1,0, -1, 0,0.625, 0.75,
+1, -1, 1,0, -1, 0,0.625, 1,
+-1, -1, 1,0, -1, 0,0.375, 1,
+1, -1, 1,1, 0, 0,0.625, 0,
+1, -1, -1,1, 0, 0,0.875, 0,
+1, 1, -1,1, 0, 0,0.875, 0.25,
+1, 1, 1,1, 0, 0,0.625, 0.25,
+-1, -1, -1,-1, 0, 0,0.125, 0,
+-1, -1, 1,-1, 0, 0,0.375, 0,
+-1, 1, 1,-1, 0, 0,0.375, 0.25,
+-1, 1, -1,-1, 0, 0,0.125, 0.25
+	};
+
+	unsigned int indices[] = {
+0, 1, 3,
+1, 2, 3,
+4, 5, 7,
+5, 6, 7,
+8, 9, 11,
+9, 10, 11,
+12, 13, 15,
+13, 14, 15,
+16, 17, 19,
+17, 18, 19,
+ 20, 21, 23,
+ 21, 22, 23
+	};
+
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	// texture coord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 }
 
 
@@ -453,7 +524,7 @@ int main(int argc, char** argv)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// glfw window creation
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Lab8 - Maparea umbrelor", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Exploatarea muzeului Antipa", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -469,6 +540,8 @@ int main(int argc, char** argv)
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glewInit();
+	
+	
 
 	// Create camera
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0, 1.0, 3.0));
@@ -485,6 +558,7 @@ int main(int argc, char** argv)
 	// load textures
 	// -------------
 	unsigned int floorTexture = CreateTexture(strExePath + "\\ColoredFloor.png");
+
 	//unsigned int floorTexture = CreateTexture("E:\Facultate\6 Explorare muzeu(Antipa cu dinozauri și păsări)\Debug\ColoredFloor.png");
 	// configure depth map FBO
 	// -----------------------
@@ -551,6 +625,8 @@ int main(int argc, char** argv)
 		// ------
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	
 
 		// 1. render depth of scene to texture (from light's perspective)
 		glm::mat4 lightProjection, lightView;
@@ -620,7 +696,7 @@ void renderScene(const Shader& shader)
 	shader.SetMat4("model", model);
 	renderFloor();
 
-	// cube
+	/*// cube
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(0.0f, 1.75f, 0.0));
 	model = glm::scale(model, glm::vec3(0.75f));
@@ -634,15 +710,27 @@ void renderScene(const Shader& shader)
 	model = glm::scale(model, glm::vec3(0.75f));
 	shader.SetMat4("model", model);
 	renderCube();
-
+*/
 
 	// cube
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(-2.0f, 1.75f, 0.0));
-	model = glm::scale(model, glm::vec3(0.75f));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0));
+	model = glm::scale(model, glm::vec3(1.f));
 	shader.SetMat4("model", model);
 	renderCube();
+
+	// duck
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(0.0f, 0.99f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.75f));
+	shader.SetMat4("model", model);
+	renderDodo(); 
+
+	
+
+
 }
+
 
 unsigned int planeVAO = 0;
 void renderFloor()
@@ -658,7 +746,7 @@ void renderFloor()
 			-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
 
 			25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-			-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+			-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  0.0f, 25.0f,
 			25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
 		};
 		// plane VAO
@@ -755,6 +843,94 @@ void renderCube()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
+/*unsigned int animalVAO = 0;
+unsigned int animalVBO = 0;
+unsigned int animalEBO = 0;*/
+float vertices[46000];
+unsigned int indices[46000];
+GLuint animalVAO, animalVBO, animalEBO;
+void renderDodo()
+{
+	// initialize (if necessary)
+	if (animalVAO == 0)
+	{
+			
+		std::vector<float> verticess ;
+		std::vector<float> indicess;
+		
+		
+
+		Loader.LoadFile("dodo.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+	
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			vertices[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+		
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indices[j] = indicess.at(j);
+		}
+		
+		glGenVertexArrays(1, &animalVAO);
+		glGenBuffers(1, &animalVBO);
+		glGenBuffers(1, &animalEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, animalVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, animalEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(animalVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(animalVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, animalVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, animalEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+
+
+
+
+
+
+}
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void processInput(GLFWwindow* window)
