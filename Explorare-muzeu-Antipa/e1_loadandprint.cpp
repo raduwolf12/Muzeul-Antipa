@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	objl::Loader Loader;
 
 	// Load .obj File
-	bool loadout = Loader.LoadFile("duck.obj");
+	bool loadout = Loader.LoadFile("dino.obj");
 
 	// Check to see if it loaded
 
