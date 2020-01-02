@@ -417,6 +417,7 @@ void processInput(GLFWwindow* window);
 void renderScene(const Shader& shader);
 void renderWall(const Shader& shader);
 void renderDodo(const Shader& shader);
+void renderPeacock(const Shader& shader);
 
 
 //objects
@@ -425,6 +426,10 @@ void renderFloor();
 void renderDodo();
 void renderTrexTop();
 void renderTrexBottom();
+void renderPeacock();
+
+
+
 //floor
 void renderRoomF();
 //room
@@ -761,6 +766,17 @@ void renderScene(const Shader& shader)
 	
 }
 
+void renderPeacock(const Shader& shader)
+{
+	//cube
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(0.0f, 0.99f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.75f));
+	shader.SetMat4("model", model);
+	renderPeacock();
+
+}
 void renderDodo(const Shader& shader)
 {
 	//cube
@@ -938,7 +954,87 @@ unsigned int animalVBO = 0;
 unsigned int animalEBO = 0;*/
 float vertices[82000];
 unsigned int indices[72000];
+
+
+GLuint peacockVAO, peacockVBO, peacockEBO;
+
+void renderPeacock()
+{
+	// initialize (if necessary)
+	if (peacockVAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("peeacock.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			vertices[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indices[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &peacockVAO);
+		glGenBuffers(1, &peacockVBO);
+		glGenBuffers(1, &peacockEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, peacockVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, peacockEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(peacockVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(peacockVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, peacockVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, peacockEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
 GLuint animalVAO, animalVBO, animalEBO;
+
 void renderDodo()
 {
 	// initialize (if necessary)
