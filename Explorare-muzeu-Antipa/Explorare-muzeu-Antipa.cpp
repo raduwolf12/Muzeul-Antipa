@@ -419,6 +419,7 @@ void renderWall(const Shader& shader);
 void renderDodo(const Shader& shader);
 void renderPeacock(const Shader& shader);
 void renderTurkeyVulture(const Shader& shader);
+void renderTree(const Shader& shader);
 
 //objects
 void renderCube();
@@ -428,7 +429,7 @@ void renderTrexTop();
 void renderTrexBottom();
 void renderPeacock();
 void renderTurkeyVulture();
-
+void renderTree();
 
 //floor
 void renderRoomF();
@@ -581,6 +582,10 @@ int main(int argc, char** argv)
 	unsigned int floorTexture1 = CreateTexture(strExePath + "\\triceratops.jpeg");
 	unsigned int floorTexture = CreateTexture(strExePath + "\\Floor.jpg");
 	unsigned int wallTexture = CreateTexture(strExePath + "\\Wall.jpg");
+	unsigned int peacockTexture = CreateTexture(strExePath + "\\Peacock.jpg");
+	unsigned int treeTexture = CreateTexture(strExePath + "\\wood.jpg");
+
+
 	// configure depth map FBO
 	// -----------------------
 	const unsigned int SHADOW_WIDTH = 4098, SHADOW_HEIGHT = 4098;
@@ -653,7 +658,7 @@ int main(int argc, char** argv)
 		glm::mat4 lightProjection, lightView;
 		glm::mat4 lightSpaceMatrix;
 		float near_plane = 1.0f, far_plane = 7.5f;
-		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+		lightProjection = glm::ortho(10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 		lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 		lightSpaceMatrix = lightProjection * lightView;
 
@@ -699,10 +704,33 @@ int main(int argc, char** argv)
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, floorTexture1);
+		glBindTexture(GL_TEXTURE_2D, peacockTexture);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		renderPeacock(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, peacockTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderTurkeyVulture(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, treeTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderTree(shadowMappingDepthShader);
 		glCullFace(GL_BACK);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
@@ -746,12 +774,25 @@ int main(int argc, char** argv)
 		renderDodo(shadowMappingShader);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, floorTexture1);
+		glBindTexture(GL_TEXTURE_2D, peacockTexture);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
 		renderPeacock(shadowMappingShader);
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, treeTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderTree(shadowMappingShader);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, peacockTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderTurkeyVulture(shadowMappingShader);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
@@ -788,21 +829,38 @@ void renderPeacock(const Shader& shader)
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(0.0f, 0.99f, 0.0f));
+	model = glm::translate(model, glm::vec3(4.0f, 3.2f, -17.7f));
 	model = glm::scale(model, glm::vec3(0.75f));
 	shader.SetMat4("model", model);
 	renderPeacock();
 
 }
+void renderTree(const Shader& shader)
+{
+	//cube
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(5.0f, -1.5f, -20.0f));
+	model = glm::scale(model, glm::vec3(0.101f));
+	shader.SetMat4("model", model);
+	renderTree();
 
+}
 void renderTurkeyVulture(const Shader& shader)
 {
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(0.0f, 0.99f, 0.0f));
+	shader.SetMat4("model", model);
+	renderCube();
+
+
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(7.0f, 0.99f, 3.0f));
 	model = glm::scale(model, glm::vec3(0.75f));
 	shader.SetMat4("model", model);
+	
+
 	renderTurkeyVulture();
 }
 
@@ -981,8 +1039,8 @@ void renderCube()
 /*unsigned int animalVAO = 0;
 unsigned int animalVBO = 0;
 unsigned int animalEBO = 0;*/
-float vertices[82000];
-unsigned int indices[72000];
+float vertices1[82000];
+unsigned int indices1[72000];
 
 
 GLuint peacockVAO, peacockVBO, peacockEBO;
@@ -1016,7 +1074,7 @@ void renderPeacock()
 		}
 		for (int j = 0; j < verticess.size(); j++)
 		{
-			vertices[j] = verticess.at(j);
+			vertices1[j] = verticess.at(j);
 		}
 
 		for (int j = 0; j < curMesh.Indices.size(); j++)
@@ -1027,7 +1085,7 @@ void renderPeacock()
 		}
 		for (int j = 0; j < curMesh.Indices.size(); j++)
 		{
-			indices[j] = indicess.at(j);
+			indices1[j] = indicess.at(j);
 		}
 
 		glGenVertexArrays(1, &peacockVAO);
@@ -1035,10 +1093,10 @@ void renderPeacock()
 		glGenBuffers(1, &peacockEBO);
 		// fill buffer
 		glBindBuffer(GL_ARRAY_BUFFER, peacockVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_DYNAMIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, peacockEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices1), &indices1, GL_DYNAMIC_DRAW);
 		// link vertex attributes
 		glBindVertexArray(peacockVAO);
 		glEnableVertexAttribArray(0);
@@ -1063,12 +1121,14 @@ void renderPeacock()
 	glBindVertexArray(0);
 }
 
-GLuint turkeyVultureVAO, turkeyVultureVBO, turkeyVultureEBO;
+float vertices2[82000];
+unsigned int indices2[72000];
+GLuint treeVAO, treeVBO, treeEBO;
 
-void renderTurkeyVulture()
+void renderTree()
 {
 	// initialize (if necessary)
-	if (turkeyVultureVAO == 0)
+	if (treeVAO == 0)
 	{
 
 		std::vector<float> verticess;
@@ -1076,7 +1136,7 @@ void renderTurkeyVulture()
 
 
 
-		Loader.LoadFile("peeacock.obj");
+		Loader.LoadFile("tree.obj");
 		objl::Mesh curMesh = Loader.LoadedMeshes[0];
 		int size = curMesh.Vertices.size();
 
@@ -1094,7 +1154,7 @@ void renderTurkeyVulture()
 		}
 		for (int j = 0; j < verticess.size(); j++)
 		{
-			vertices[j] = verticess.at(j);
+			vertices2[j] = verticess.at(j);
 		}
 
 		for (int j = 0; j < curMesh.Indices.size(); j++)
@@ -1105,7 +1165,87 @@ void renderTurkeyVulture()
 		}
 		for (int j = 0; j < curMesh.Indices.size(); j++)
 		{
-			indices[j] = indicess.at(j);
+			indices2[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &treeVAO);
+		glGenBuffers(1, &treeVBO);
+		glGenBuffers(1, &treeEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, treeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, treeEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), &indices2, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(treeVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(treeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, treeVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, treeEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+float vertices3[82000];
+unsigned int indices3[72000];
+
+GLuint turkeyVultureVAO, turkeyVultureVBO, turkeyVultureEBO;
+
+void renderTurkeyVulture()
+{
+	// initialize (if necessary)
+	if (turkeyVultureVAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("turkeyvulture.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			vertices3[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indices3[j] = indicess.at(j);
 		}
 
 		glGenVertexArrays(1, &turkeyVultureVAO);
@@ -1113,10 +1253,10 @@ void renderTurkeyVulture()
 		glGenBuffers(1, &turkeyVultureEBO);
 		// fill buffer
 		glBindBuffer(GL_ARRAY_BUFFER, turkeyVultureVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices3), vertices3, GL_DYNAMIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, turkeyVultureEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices3), &indices3, GL_DYNAMIC_DRAW);
 		// link vertex attributes
 		glBindVertexArray(turkeyVultureVAO);
 		glEnableVertexAttribArray(0);
@@ -1141,6 +1281,8 @@ void renderTurkeyVulture()
 	glBindVertexArray(0);
 }
 
+float vertices4[82000];
+unsigned int indices4[72000];
 GLuint animalVAO, animalVBO, animalEBO;
 void renderDodo()
 {
@@ -1171,7 +1313,7 @@ void renderDodo()
 		}
 		for (int j = 0; j < verticess.size(); j++)
 		{
-			vertices[j] = verticess.at(j);
+			vertices4[j] = verticess.at(j);
 		}
 
 		for (int j = 0; j < curMesh.Indices.size(); j++)
@@ -1182,7 +1324,7 @@ void renderDodo()
 		}
 		for (int j = 0; j < curMesh.Indices.size(); j++)
 		{
-			indices[j] = indicess.at(j);
+			indices4[j] = indicess.at(j);
 		}
 		
 		glGenVertexArrays(1, &animalVAO);
@@ -1190,10 +1332,10 @@ void renderDodo()
 		glGenBuffers(1, &animalEBO);
 		// fill buffer
 		glBindBuffer(GL_ARRAY_BUFFER, animalVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices4), vertices4, GL_DYNAMIC_DRAW);
 		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, animalEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices4), &indices4, GL_DYNAMIC_DRAW);
 		// link vertex attributes
 		glBindVertexArray(animalVAO);
 		glEnableVertexAttribArray(0);
@@ -1218,6 +1360,8 @@ void renderDodo()
 	glBindVertexArray(0);
 }
 
+float vertices5[82000];
+unsigned int indices5[72000];
 GLuint trexTopVAO, trexTopVBO, trexTopEBO;
 void renderTrexTop()
 {
@@ -1247,7 +1391,7 @@ void renderTrexTop()
 		}
 		for (int j = 0; j < verticess.size(); j++)
 		{
-			vertices[j] = verticess.at(j);
+			vertices5[j] = verticess.at(j);
 		}
 
 		for (int j = 0; j < curMesh.Indices.size(); j++)
@@ -1258,7 +1402,7 @@ void renderTrexTop()
 		}
 		for (int j = 0; j < curMesh.Indices.size(); j++)
 		{
-			indices[j] = indicess.at(j);
+			indices5[j] = indicess.at(j);
 		}
 
 		glGenVertexArrays(1, &trexTopVAO);
@@ -1266,10 +1410,10 @@ void renderTrexTop()
 		glGenBuffers(1, &trexTopEBO);
 		// fill buffer
 		glBindBuffer(GL_ARRAY_BUFFER, trexTopVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices5), vertices5, GL_DYNAMIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, trexTopEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices5), &indices5, GL_DYNAMIC_DRAW);
 		// link vertex attributes
 		glBindVertexArray(trexTopVAO);
 		glEnableVertexAttribArray(0);
@@ -1293,7 +1437,8 @@ void renderTrexTop()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
-
+float vertices6[82000];
+unsigned int indices6[72000];
 GLuint trexBottomVAO, trexBottomVBO, trexBottomEBO;
 void renderTrexBottom()
 {
@@ -1323,7 +1468,7 @@ void renderTrexBottom()
 		}
 		for (int j = 0; j < verticess.size(); j++)
 		{
-			vertices[j] = verticess.at(j);
+			vertices6[j] = verticess.at(j);
 		}
 
 		for (int j = 0; j < curMesh.Indices.size(); j++)
@@ -1334,7 +1479,7 @@ void renderTrexBottom()
 		}
 		for (int j = 0; j < curMesh.Indices.size(); j++)
 		{
-			indices[j] = indicess.at(j);
+			indices6[j] = indicess.at(j);
 		}
 
 		glGenVertexArrays(1, &trexBottomVAO);
@@ -1342,10 +1487,10 @@ void renderTrexBottom()
 		glGenBuffers(1, &trexBottomEBO);
 		// fill buffer
 		glBindBuffer(GL_ARRAY_BUFFER, trexBottomVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices6), vertices6, GL_DYNAMIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, trexBottomEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices6), &indices6, GL_DYNAMIC_DRAW);
 		// link vertex attributes
 		glBindVertexArray(trexBottomVAO);
 		glEnableVertexAttribArray(0);
@@ -1369,7 +1514,8 @@ void renderTrexBottom()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
-
+float vertices7[82000];
+unsigned int indices7[72000];
 GLuint floorVAO, floorVBO, floorEBO;
 void renderRoomF()
 {
@@ -1400,7 +1546,7 @@ void renderRoomF()
 		}
 		for (int j = 0; j < verticess.size(); j++)
 		{
-			vertices[j] = verticess.at(j);
+			vertices7[j] = verticess.at(j);
 		}
 
 		for (int j = 0; j < curMesh.Indices.size(); j++)
@@ -1411,7 +1557,7 @@ void renderRoomF()
 		}
 		for (int j = 0; j < curMesh.Indices.size(); j++)
 		{
-			indices[j] = indicess.at(j);
+			indices7[j] = indicess.at(j);
 		}
 
 		glGenVertexArrays(1, &floorVAO);
@@ -1419,10 +1565,10 @@ void renderRoomF()
 		glGenBuffers(1, &floorEBO);
 		// fill buffer
 		glBindBuffer(GL_ARRAY_BUFFER, floorVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices7), vertices7, GL_DYNAMIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, floorEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices7), &indices7, GL_DYNAMIC_DRAW);
 		// link vertex attributes
 		glBindVertexArray(floorVAO);
 		glEnableVertexAttribArray(0);
@@ -1447,7 +1593,8 @@ void renderRoomF()
 	glBindVertexArray(0);
 
 }
-
+float vertices[82000];
+unsigned int indices[72000];
 GLuint floorVAO1, floorVBO1, floorEBO1;
 void renderRoomF1()
 {
