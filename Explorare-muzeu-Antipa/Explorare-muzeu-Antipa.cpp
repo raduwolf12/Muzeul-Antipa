@@ -23,8 +23,8 @@
 #pragma comment (lib, "OpenGL32.lib")
 
 // settings
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 1000;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 bool rot = false;
 objl::Loader Loader;
 //bool loadout = Loader.LoadFile("duck.obj");
@@ -428,6 +428,7 @@ void renderGlassPlatform(const Shader& shader);
 void renderCube();
 void renderFloor();
 void renderDino();
+void renderDino2();
 void renderTrexTop();
 void renderTrexBottom();
 void renderPeacock();
@@ -586,8 +587,8 @@ int main(int argc, char** argv)
 	// load textures
 	// -------------
 	unsigned int floorTexture1 = CreateTexture(strExePath + "\\stegosaurus_-_LowPoly_u1_v1.jpg");
-	unsigned int floorTexture = CreateTexture(strExePath + "\\Floor.jpg");
-	unsigned int wallTexture = CreateTexture(strExePath + "\\Wall.jpg");
+	unsigned int floorTexture = CreateTexture(strExePath + "\\Floor5.jpg");
+	unsigned int wallTexture = CreateTexture(strExePath + "\\Wall5.jpg");
 	unsigned int platformTexture = CreateTexture(strExePath + "\\black.jpg");
 	unsigned int peacockTexture = CreateTexture(strExePath + "\\Peacock.jpg");
 	unsigned int treeTexture = CreateTexture(strExePath + "\\wood.jpg");
@@ -982,6 +983,12 @@ void renderDino(const Shader& shader)
 	shader.SetMat4("model", model);
 	renderDino();
 
+
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(-15.0f, -0.2f, 10.0f));
+	model = glm::scale(model, glm::vec3(0.75f));
+	shader.SetMat4("model", model);
+	renderDino2();
 
 	/*model = glm::mat4();
 	model = glm::translate(model, glm::vec3(0.0f, 0.99f, 0.0f));
@@ -1417,14 +1424,7 @@ void renderDino()
 			v.TextureCoordinate.X = (float)curMesh.Vertices[j].TextureCoordinate.X;
 			v.TextureCoordinate.Y = (float)curMesh.Vertices[j].TextureCoordinate.Y;
 
-			/*verticess.push_back((float)curMesh.Vertices[j].Position.X);
-			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
-			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
-			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
-			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
-			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
-			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
-			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);*/
+			
 			ver[j] = v;
 		}
 		for (int j = 0; j < verticess.size(); j++)
@@ -1475,6 +1475,92 @@ void renderDino()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
+
+
+unsigned int indicesD[72000];
+objl::Vertex verD[82000];
+
+GLuint dino2VAO, dino2VBO, dino2EBO;
+void renderDino2()
+{
+	// initialize (if necessary)
+	if (dino2VAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("dino2.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+		objl::Vertex v;
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+			v.Position.X = (float)curMesh.Vertices[j].Position.X;
+			v.Position.Y = (float)curMesh.Vertices[j].Position.Y;
+			v.Position.Z = (float)curMesh.Vertices[j].Position.Z;
+			v.Normal.X = (float)curMesh.Vertices[j].Normal.X;
+			v.Normal.Y = (float)curMesh.Vertices[j].Normal.Y;
+			v.Normal.Z = (float)curMesh.Vertices[j].Normal.Z;
+			v.TextureCoordinate.X = (float)curMesh.Vertices[j].TextureCoordinate.X;
+			v.TextureCoordinate.Y = (float)curMesh.Vertices[j].TextureCoordinate.Y;
+
+
+			verD[j] = v;
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			vertices[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indicesD[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &dino2VAO);
+		glGenBuffers(1, &dino2VBO);
+		glGenBuffers(1, &dino2EBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, dino2VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(verD), verD, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dino2EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesD), &indicesD, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(dino2VAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(dino2VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, dino2VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dino2EBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+
+
 objl::Vertex ver1[82000];
 GLuint platformVAO, platformVBO, platformEBO;
 void renderGlassPlatform()
