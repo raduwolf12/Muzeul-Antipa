@@ -588,7 +588,7 @@ int main(int argc, char** argv)
 	// -------------
 	unsigned int floorTexture1 = CreateTexture(strExePath + "\\stegosaurus_-_LowPoly_u1_v1.jpg");
 	unsigned int floorTexture = CreateTexture(strExePath + "\\Floor5.jpg");
-	unsigned int wallTexture = CreateTexture(strExePath + "\\Wall5.jpg");
+	unsigned int wallTexture = CreateTexture(strExePath + "\\Wall.jpg");
 	unsigned int platformTexture = CreateTexture(strExePath + "\\black.jpg");
 	unsigned int peacockTexture = CreateTexture(strExePath + "\\Peacock.jpg");
 	unsigned int treeTexture = CreateTexture(strExePath + "\\wood.jpg");

@@ -14,7 +14,7 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
+
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
@@ -338,3 +338,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+*.tlog
+Explorare-muzeu-Antipa/Debug/e1_loadandprint.obj
+Explorare-muzeu-Antipa/Debug/Explorare-muzeu-Antipa.obj
+Explorare-muzeu-Antipa/Debug/explorare-muzeu-antipa.obj.enc
+Explorare-muzeu-Antipa/Debug/Explorare-muzeu-Antipa.vcxproj.FileListAbsolute.txt
+Explorare-muzeu-Antipa/Debug/vc142.idb
+Debug/Explorare-muzeu-Antipa.exe
