@@ -423,6 +423,7 @@ void renderTree(const Shader& shader);
 void renderOwl(const Shader& shader);
 void renderGlassWindows(const Shader& shader);
 void renderGlassPlatform(const Shader& shader);
+void renderLeafTree(const Shader& shader);
 
 //objects
 void renderCube();
@@ -437,6 +438,7 @@ void renderTree();
 void renderOwl();
 void renderGlassWindows();
 void renderGlassPlatform();
+void renderLeafTree();
 
 //floor
 void renderRoomF();
@@ -586,14 +588,14 @@ int main(int argc, char** argv)
 
 	// load textures
 	// -------------
-	unsigned int floorTexture1 = CreateTexture(strExePath + "\\stegosaurus_-_LowPoly_u1_v1.jpg");
-	unsigned int floorTexture = CreateTexture(strExePath + "\\Floor5.jpg");
+	unsigned int floorTexture1 = CreateTexture(strExePath + "\\Wall4.jpg");
+	unsigned int floorTexture = CreateTexture(strExePath + "\\Floor4.jpg");
 	unsigned int wallTexture = CreateTexture(strExePath + "\\Wall.jpg");
 	unsigned int platformTexture = CreateTexture(strExePath + "\\black.jpg");
 	unsigned int peacockTexture = CreateTexture(strExePath + "\\Peacock.jpg");
 	unsigned int treeTexture = CreateTexture(strExePath + "\\wood.jpg");
 	unsigned int owlTexture = CreateTexture(strExePath + "\\owl.jpg");
-
+	unsigned int leafTreeTexture = CreateTexture(strExePath + "\\leaftree.jpg");
 
 	// configure depth map FBO
 	// -----------------------
@@ -747,6 +749,17 @@ int main(int argc, char** argv)
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, leafTreeTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderLeafTree(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, treeTexture);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
@@ -860,6 +873,13 @@ int main(int argc, char** argv)
 		renderOwl(shadowMappingShader);
 
 		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, leafTreeTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderLeafTree(shadowMappingShader);
+
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, peacockTexture);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -941,7 +961,19 @@ void renderTree(const Shader& shader)
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(5.0f, -1.5f, -20.0f));
+	model = glm::translate(model, glm::vec3(5.0f, -1.7f, -20.0f));
+	model = glm::scale(model, glm::vec3(0.101f));
+	shader.SetMat4("model", model);
+	renderTree();
+
+}
+
+void renderLeafTree(const Shader& shader)
+{
+	//cube
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(-5.0f, -1.5f, -20.0f));
 	model = glm::scale(model, glm::vec3(0.101f));
 	shader.SetMat4("model", model);
 	renderTree();
@@ -964,10 +996,10 @@ void renderTurkeyVulture(const Shader& shader)
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(7.0f, 0.99f, 3.0f));
-	model = glm::scale(model, glm::vec3(0.75f));
+	model = glm::translate(model, glm::vec3(-3.0f, -0.4f, -16.0f));
+	model = glm::scale(model, glm::vec3(1.2f));
 	shader.SetMat4("model", model);
-	//renderTurkeyVulture();
+	renderTurkeyVulture();
 }
 
 void renderDino(const Shader& shader)
@@ -1311,6 +1343,91 @@ void renderTree()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
+
+
+float vertices12[82000];
+unsigned int indices12[72000];
+GLuint ltreeVAO, ltreeVBO, ltreeEBO;
+
+void renderLeafTree()
+{
+	// initialize (if necessary)
+	if (ltreeVAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("leaftree.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			vertices12[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indices12[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &ltreeVAO);
+		glGenBuffers(1, &ltreeVBO);
+		glGenBuffers(1, &ltreeEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, ltreeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices12), vertices12, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ltreeEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices12), &indices12, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(ltreeVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(ltreeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, ltreeVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ltreeEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+
+
+
 float vertices3[82000];
 unsigned int indices3[72000];
 
