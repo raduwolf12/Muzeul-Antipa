@@ -24,4 +24,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ShadowMapping.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="ShadowMapping.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="ShadowMappingDepth.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="ShadowMappingDepth.vs">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
