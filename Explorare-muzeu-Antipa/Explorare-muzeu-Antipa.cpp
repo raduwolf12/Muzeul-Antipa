@@ -426,6 +426,10 @@ void renderGlassPlatform(const Shader& shader);
 void renderLeafTree(const Shader& shader);
 void renderLeafTree(const Shader& shader);
 void renderIce(const Shader& shader);
+void renderCloud(const Shader& shader);
+void renderParrot(const Shader& shader);
+void renderStander(const Shader& shader);
+
 //objects
 void renderCube();
 void renderFloor();
@@ -448,6 +452,10 @@ void renderHat3();
 void renderHat4();
 void renderHat5();
 void renderHat6();
+void renderCloud();
+void renderParrot();
+void renderStander();
+
 //floor
 void renderRoomF();
 //room
@@ -579,8 +587,8 @@ int main(int argc, char** argv)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glewInit();
-	
-	
+
+
 
 	// Create camera
 	pCamera = new Camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0, 1.0, 3.0));
@@ -605,6 +613,11 @@ int main(int argc, char** argv)
 	unsigned int owlTexture = CreateTexture(strExePath + "\\owl.jpg");
 	unsigned int leafTreeTexture = CreateTexture(strExePath + "\\leaftree.jpg");
 	unsigned int iceTexture = CreateTexture(strExePath + "\\ice.png");
+	unsigned int cloudTexture = CreateTexture(strExePath + "\\c.jpg");
+	unsigned int turkeyVuTexture = CreateTexture(strExePath + "\\Vu.jpg");
+	unsigned int parrotTexture = CreateTexture(strExePath + "\\Feather.jpg");
+
+	unsigned int standerTexture = CreateTexture(strExePath + "\\wood.jpg");
 
 
 	// configure depth map FBO
@@ -673,7 +686,7 @@ int main(int argc, char** argv)
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
+
 
 		// 1. render depth of scene to texture (from light's perspective)
 		glm::mat4 lightProjection, lightView;
@@ -743,17 +756,51 @@ int main(int argc, char** argv)
 		glCullFace(GL_BACK);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, peacockTexture);
+		glBindTexture(GL_TEXTURE_2D, turkeyVuTexture);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		renderTurkeyVulture(shadowMappingDepthShader);
 		glCullFace(GL_BACK);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, cloudTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderCloud(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, standerTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderStander(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, parrotTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderParrot(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -776,7 +823,7 @@ int main(int argc, char** argv)
 		renderTree(shadowMappingDepthShader);
 		glCullFace(GL_BACK);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		
+
 
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -859,8 +906,27 @@ int main(int argc, char** argv)
 		glDisable(GL_CULL_FACE);
 		renderGlassPlatform(shadowMappingShader);
 
-	
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, cloudTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderCloud(shadowMappingShader);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, standerTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderStander(shadowMappingShader);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, parrotTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderParrot(shadowMappingShader);
 
 
 		glActiveTexture(GL_TEXTURE0);
@@ -900,7 +966,7 @@ int main(int argc, char** argv)
 		renderLeafTree(shadowMappingShader);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, peacockTexture);
+		glBindTexture(GL_TEXTURE_2D, turkeyVuTexture);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
@@ -944,7 +1010,32 @@ void renderScene(const Shader& shader)
 	shader.SetMat4("model", model);
 	renderRoomF();
 
-	
+
+}
+
+
+void renderCloud(const Shader& shader)
+{
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(0.0f, 10.7f, -17.7f));
+	model = glm::scale(model, glm::vec3(0.028f));
+	shader.SetMat4("model", model);
+	renderCloud();
+
+	//glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(-7.0f, 10.2f, -17.7f));
+	model = glm::scale(model, glm::vec3(0.02f));
+	shader.SetMat4("model", model);
+	renderCloud();
+
+	//glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(6.0f, 10.7f, -17.7f));
+	model = glm::scale(model, glm::vec3(0.025f));
+	shader.SetMat4("model", model);
+	renderCloud();
 }
 
 void renderGlassWindows(const Shader& shader)
@@ -976,50 +1067,83 @@ void renderGlassPlatform(const Shader& shader)
 }
 
 
-void renderPeacock(const Shader& shader)
+void renderParrot(const Shader& shader)
 {
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(4.0f, 3.2f, -17.7f));
-	model = glm::scale(model, glm::vec3(0.75f));
+	model = glm::translate(model, glm::vec3(10.4f, -0.5f, -14.6f));
+	model = glm::scale(model, glm::vec3(0.85f));
+
+	//model = glm::translate(model, glm::vec3(-2.5f, -0.7f, -13.4f));
+	//model = glm::scale(model, glm::vec3(1.8f));
 	shader.SetMat4("model", model);
-	renderPeacock();
+	renderParrot();
 
 }
+void renderStander(const Shader& shader)
+{
+	//cube
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(10.4f, -0.5f, -14.6f));
+	model = glm::scale(model, glm::vec3(0.85f));
+
+	//model = glm::translate(model, glm::vec3(-2.5f, -0.7f, -13.4f));
+	//model = glm::scale(model, glm::vec3(1.8f));
+	shader.SetMat4("model", model);
+	renderStander();
+
+}
+
 void renderTree(const Shader& shader)
 {
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(5.0f, -1.7f, -20.0f));
-	model = glm::scale(model, glm::vec3(0.101f));
+	model = glm::translate(model, glm::vec3(5.0f, -2.5f, -20.0f));
+	model = glm::scale(model, glm::vec3(0.17f));
 	shader.SetMat4("model", model);
 	renderTree();
 
 }
+
 
 void renderLeafTree(const Shader& shader)
 {
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(-5.0f, -1.5f, -20.0f));
-	model = glm::scale(model, glm::vec3(0.101f));
+	model = glm::translate(model, glm::vec3(-5.0f, -2.5f, -20.0f));
+	model = glm::scale(model, glm::vec3(0.17f));
 	shader.SetMat4("model", model);
 	renderTree();
 
 }
 
-void renderOwl (const Shader& shader)
+void renderOwl(const Shader& shader)
 {
 	//render owl
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(6.5f, 3.2f, -17.7f));
-	model = glm::scale(model, glm::vec3(0.75f));
+	model = glm::translate(model, glm::vec3(9.5f, 2.4f, -14.7f));
+	model = glm::scale(model, glm::vec3(1.f));
 	shader.SetMat4("model", model);
 	renderOwl();
+
+}
+void renderPeacock(const Shader& shader)
+{
+	//cube
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(3.4f, 3.4f, -15.6f));
+	model = glm::scale(model, glm::vec3(2.f));
+
+	//model = glm::translate(model, glm::vec3(-2.5f, -0.7f, -13.4f));
+	//model = glm::scale(model, glm::vec3(1.8f));
+	shader.SetMat4("model", model);
+	renderPeacock();
 
 }
 void renderTurkeyVulture(const Shader& shader)
@@ -1027,15 +1151,15 @@ void renderTurkeyVulture(const Shader& shader)
 	//cube
 	glm::mat4 model;
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(-3.0f, -0.4f, -16.0f));
-	model = glm::scale(model, glm::vec3(1.2f));
+	model = glm::translate(model, glm::vec3(-2.5f, -0.7f, -13.4f));
+	model = glm::scale(model, glm::vec3(1.8f));
 	shader.SetMat4("model", model);
 	renderTurkeyVulture();
 }
 void renderIce(const Shader& shader)
 {
 	//cube
-	float angle =120.f;
+	float angle = 120.f;
 
 	glm::mat4 model;
 	model = glm::mat4();
@@ -1056,7 +1180,7 @@ void renderIce(const Shader& shader)
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(17.5f, 1.0f, 14.5f));
 	model = glm::scale(model, glm::vec3(0.1f));
-	model = glm::rotate(model,angle  , glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
 	//model=glm::rotate()
 	shader.SetMat4("model", model);
 	renderHat1();
@@ -1113,7 +1237,7 @@ void renderDino(const Shader& shader)
 {
 	//dino
 	glm::mat4 model;
-	
+
 
 
 	model = glm::mat4();
@@ -2093,7 +2217,6 @@ void renderTree()
 	glBindVertexArray(0);
 }
 
-
 float vertices12[82000];
 unsigned int indices12[72000];
 GLuint ltreeVAO, ltreeVBO, ltreeEBO;
@@ -2173,6 +2296,7 @@ void renderLeafTree()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 }
+
 
 
 
@@ -2258,6 +2382,248 @@ void renderTurkeyVulture()
 	glBindVertexArray(0);
 }
 
+float verticesCloud[82000];
+unsigned int indicesCloud[72000];
+
+GLuint cloudVAO, cloudVBO, cloudEBO;
+
+void renderCloud()
+{
+	// initialize (if necessary)
+	if (cloudVAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("Cloud1.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			verticesCloud[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indicesCloud[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &cloudVAO);
+		glGenBuffers(1, &cloudVBO);
+		glGenBuffers(1, &cloudEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, cloudVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(verticesCloud), verticesCloud, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cloudEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesCloud), &indicesCloud, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(cloudVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(cloudVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cloudVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cloudEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+float verticesParrot[82000];
+unsigned int indicesParrot[72000];
+
+GLuint parrotVAO, parrotVBO, parrotEBO;
+
+void renderParrot()
+{
+	// initialize (if necessary)
+	if (parrotVAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("Parrot.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			verticesParrot[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indicesParrot[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &parrotVAO);
+		glGenBuffers(1, &parrotVBO);
+		glGenBuffers(1, &parrotEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, parrotVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(verticesParrot), verticesParrot, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, parrotEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesParrot), &indicesParrot, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(parrotVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(parrotVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, parrotVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, parrotEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+float verticesStander[82000];
+unsigned int indicesStander[72000];
+
+GLuint StanderVAO, StanderVBO, StanderEBO;
+
+void renderStander()
+{
+	// initialize (if necessary)
+	if (StanderVAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("Stander.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			verticesStander[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indicesStander[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &StanderVAO);
+		glGenBuffers(1, &StanderVBO);
+		glGenBuffers(1, &StanderEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, StanderVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(verticesStander), verticesStander, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, StanderEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesStander), &indicesStander, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(StanderVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(StanderVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, StanderVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, StanderEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
 
 unsigned int indices[72000];
 objl::Vertex ver[82000];
@@ -2290,7 +2656,7 @@ void renderDino()
 			v.TextureCoordinate.X = (float)curMesh.Vertices[j].TextureCoordinate.X;
 			v.TextureCoordinate.Y = (float)curMesh.Vertices[j].TextureCoordinate.Y;
 
-			
+
 			ver[j] = v;
 		}
 		for (int j = 0; j < verticess.size(); j++)
