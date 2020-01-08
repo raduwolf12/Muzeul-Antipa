@@ -1,11 +1,3 @@
-newmtl GastraliaRightSG
-illum 4
-Kd 0.98 0.96 0.91
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 0.20 0.20 0.20
-Ns 829.75
 newmtl ModelSG
 illum 4
 Kd 0.00 0.00 0.00
@@ -32,20 +24,20 @@ map_Kd Skull.jpg
 Ni 1.00
 Ks 0.00 0.00 0.00
 Ns 0.00
-newmtl Upper_teeth_Untitled_186SG
-illum 4
-Kd 0.90 0.84 0.77
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 0.20 0.20 0.20
-Ns 829.75
 newmtl initialShadingGroup
 illum 4
 Kd 0.50 0.50 0.50
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
+newmtl pasted__merikotka_lowpolySG
+illum 4
+Kd 0.80 0.80 0.80
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.00 0.00 0.00
+Ns 7.61
 newmtl stegosaurus___LowPoly1:stegosaurus___LowPoly_Material_u1_v1
 illum 4
 Kd 0.00 0.00 0.00
