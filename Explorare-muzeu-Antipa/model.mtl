@@ -1,0 +1,47 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.1.35440475)
+
+newmtl Pareti
+kd 1 0 0
+illum 1
+
+newmtl Mensola
+kd 0.117647 0.564706 1
+illum 1
+
+newmtl Pioli
+kd 0 0 1
+illum 1
+
+newmtl Vetro
+kd 0 1 1
+illum 1
+
+newmtl Perete_Posteriore
+kd 0.541176 0.168627 0.886275
+illum 1
+
+newmtl Tetto_e_Base
+kd 1 0 1
+illum 1
+
+newmtl Viti
+kd 0.501961 0 0
+illum 1
+
+newmtl Pomello
+kd 1 1 0
+illum 1
+
+newmtl Cerniera_Anta
+kd 0 1 0
+illum 1
+
+newmtl Cerniera_Parete
+kd 0.678431 1 0.184314
+illum 1
+
+newmtl Cornice
+kd 1 0.647059 0
+illum 1
+
