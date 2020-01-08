@@ -466,7 +466,6 @@ void renderWoodpecker();
 void renderGoose();
 void renderStander();
 
-
 void renderPaun1();
 void renderPaun2();
 void renderPaun3();
@@ -652,12 +651,12 @@ int main(int argc, char** argv)
 	// -------------
 	unsigned int floorTexture1 = CreateTexture(strExePath + "\\Wall4.jpg");
 	unsigned int floorTexture = CreateTexture(strExePath + "\\Floor4.jpg");
-	unsigned int wallTexture = CreateTexture(strExePath + "\\Wall.jpg");
+	unsigned int wallTexture = CreateTexture(strExePath + "\\TexturesCom_PlasterColoured0506_1_S.jpg");
 	unsigned int platformTexture = CreateTexture(strExePath + "\\black.jpg");
 	unsigned int peacockTexture = CreateTexture(strExePath + "\\Peacock.jpg");
 	unsigned int treeTexture = CreateTexture(strExePath + "\\wood.jpg");
 	unsigned int owlTexture = CreateTexture(strExePath + "\\owl.jpg");
-	unsigned int leafTreeTexture = CreateTexture(strExePath + "\\leaftree.jpg");
+	unsigned int leafTreeTexture = CreateTexture(strExePath + "\\wood.jpg");
 	unsigned int iceTexture = CreateTexture(strExePath + "\\ice.png");
 	unsigned int cloudTexture = CreateTexture(strExePath + "\\c.jpg");
 	unsigned int turkeyVuTexture = CreateTexture(strExePath + "\\Vu.jpg");
@@ -669,6 +668,8 @@ int main(int argc, char** argv)
 
 	unsigned int standerTexture = CreateTexture(strExePath + "\\wood.jpg");
 	unsigned int backgroundTexture = CreateTexture(strExePath + "\\green1.jpg");
+
+
 
 	// configure depth map FBO
 	// -----------------------
@@ -1249,19 +1250,6 @@ void renderBackground(const Shader& shader)
 	model = glm::scale(model, glm::vec3(4.3f));
 	shader.SetMat4("model", model);
 	renderBackground();
-
-
-
-
-	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(-23.f, 5.5f, -22.4f));
-	model = glm::scale(model, glm::vec3(4.3f));
-
-	model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	shader.SetMat4("model", model);
-	renderBackground();
-
 
 
 }
