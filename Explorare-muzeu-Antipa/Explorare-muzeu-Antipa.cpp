@@ -418,6 +418,8 @@ void renderScene(const Shader& shader);
 void renderWall(const Shader& shader);
 void renderDino(const Shader& shader);
 void renderPeacock(const Shader& shader);
+void renderPaun(const Shader& shader);
+
 void renderTurkeyVulture(const Shader& shader);
 void renderTree(const Shader& shader);
 void renderOwl(const Shader& shader);
@@ -433,6 +435,7 @@ void renderWoodpecker(const Shader& shader);
 void renderGoose(const Shader& shader);
 void renderStander(const Shader& shader);
 void renderPiloni(const Shader& shader);
+void renderBackground(const Shader& shader);
 
 //objects
 void renderCube();
@@ -462,6 +465,38 @@ void renderDuck();
 void renderWoodpecker();
 void renderGoose();
 void renderStander();
+
+
+void renderPaun1();
+void renderPaun2();
+void renderPaun3();
+void renderPaun4();
+void renderPaun5();
+void renderPaun6();
+void renderPaun7();
+void renderPaun8();
+void renderPaun9();
+void renderPaun10();
+void renderPaun11();
+void renderPaun12();
+void renderPaun13();
+void renderPaun14();
+void renderPaun15();
+void renderPaun16();
+void renderPaun17();
+void renderPaun18();
+void renderPaun19();
+void renderPaun20();
+void renderPaun21();
+void renderPaun22();
+void renderPaun23();
+void renderPaun24();
+void renderPaun25();
+void renderPaun26();
+void renderPaun27();
+void renderPaun28();
+void renderBackground();
+
 
 void renderTriceraSkull();
 void renderPilon1();
@@ -633,7 +668,7 @@ int main(int argc, char** argv)
 	unsigned int pilonTexture = CreateTexture(strExePath + "\\floor5.jpg");
 
 	unsigned int standerTexture = CreateTexture(strExePath + "\\wood.jpg");
-
+	unsigned int backgroundTexture = CreateTexture(strExePath + "\\green1.jpg");
 
 	// configure depth map FBO
 	// -----------------------
@@ -919,6 +954,28 @@ int main(int argc, char** argv)
 		glCullFace(GL_BACK);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderBackground(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, peacockTexture);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		renderPaun(shadowMappingDepthShader);
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// reset viewport
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -957,6 +1014,13 @@ int main(int argc, char** argv)
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
 		renderWoodpecker(shadowMappingShader);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, peacockTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderPaun(shadowMappingShader);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, gooseTexture);
@@ -1059,6 +1123,14 @@ int main(int argc, char** argv)
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
 		renderPiloni(shadowMappingShader);
+
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glDisable(GL_CULL_FACE);
+		renderBackground(shadowMappingShader);
 
 		//obiect transparent
 		glEnable(GL_BLEND); glBlendFunc(GL_ONE, GL_ONE);
@@ -1166,6 +1238,31 @@ void renderParrot(const Shader& shader)
 	//model = glm::scale(model, glm::vec3(1.8f));
 	shader.SetMat4("model", model);
 	renderParrot();
+
+}
+void renderBackground(const Shader& shader)
+{
+	//cube
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(2.f, 5.5f, -22.4f));
+	model = glm::scale(model, glm::vec3(4.3f));
+	shader.SetMat4("model", model);
+	renderBackground();
+
+
+
+
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(-23.f, 5.5f, -22.4f));
+	model = glm::scale(model, glm::vec3(4.3f));
+
+	model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	shader.SetMat4("model", model);
+	renderBackground();
+
+
 
 }
 void renderPiloni(const Shader& shader)
@@ -1368,6 +1465,19 @@ void renderIce(const Shader& shader)
 	//shader.SetMat4("model", model);
 	//renderHat7();
 }
+
+void renderPaun(const Shader& shader)
+{
+	////cube
+	glm::mat4 model;
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(20.4f, -1.f, -3.5f));
+	model = glm::scale(model, glm::vec3(3.5f));
+	shader.SetMat4("model", model);
+	renderPaun1();
+
+}
+
 void renderDino(const Shader& shader)
 {
 	//dino
@@ -3658,6 +3768,166 @@ void renderTrexTop()
 	glBindVertexArray(trexTopVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, trexTopVBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, trexTopEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+float verticesbk[82000];
+unsigned int indicesbk[72000];
+GLuint backgroundVAO, backgroundVBO, backgroundEBO;
+
+void renderBackground()
+{
+	// initialize (if necessary)
+	if (backgroundVAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("background3.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			verticesbk[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indicesbk[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &backgroundVAO);
+		glGenBuffers(1, &backgroundVBO);
+		glGenBuffers(1, &backgroundEBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, backgroundVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(verticesbk), verticesbk, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backgroundEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesbk), &indicesbk, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(backgroundVAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(backgroundVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, backgroundVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, backgroundEBO);
+	int indexArraySize;
+	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+
+float verticesP1[82000];
+unsigned int indicesP1[72000];
+GLuint P1VAO, P1VBO, P1EBO;
+
+void renderPaun1()
+{
+	// initialize (if necessary)
+	if (P1VAO == 0)
+	{
+
+		std::vector<float> verticess;
+		std::vector<float> indicess;
+
+
+
+		Loader.LoadFile("paun2.obj");
+		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+		int size = curMesh.Vertices.size();
+
+		for (int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+
+			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+		for (int j = 0; j < verticess.size(); j++)
+		{
+			verticesP1[j] = verticess.at(j);
+		}
+
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+
+			indicess.push_back((float)curMesh.Indices[j]);
+
+		}
+		for (int j = 0; j < curMesh.Indices.size(); j++)
+		{
+			indicesP1[j] = indicess.at(j);
+		}
+
+		glGenVertexArrays(1, &P1VAO);
+		glGenBuffers(1, &P1VBO);
+		glGenBuffers(1, &P1EBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, P1VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(verticesP1), verticesP1, GL_DYNAMIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, P1EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesP1), &indicesP1, GL_DYNAMIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(P1VAO);
+		glEnableVertexAttribArray(0);
+
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(P1VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, P1VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, P1EBO);
 	int indexArraySize;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
 	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
