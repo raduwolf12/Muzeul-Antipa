@@ -16,7 +16,7 @@
 # Build results
 
 [Dd]ebugPublic/
-[Rr]elease/
+
 [Rr]eleases/
 x64/
 x86/
@@ -346,3 +346,5 @@ Explorare-muzeu-Antipa/Debug/Explorare-muzeu-Antipa.vcxproj.FileListAbsolute.txt
 Explorare-muzeu-Antipa/Debug/vc142.idb
 Debug/Explorare-muzeu-Antipa.exe
 Explorare-muzeu-Antipa/workspace.mb
+Release/Explorare-muzeu-Antipa.exe
+Explorare-muzeu-Antipa/Release/Explorare-muzeu-Antipa.obj
