@@ -430,7 +430,7 @@ void renderLeafTree(const Shader& shader);
 void renderIce(const Shader& shader);
 void renderCloud(const Shader& shader);
 void renderParrot(const Shader& shader);
-void renderDuck(const Shader& shader);
+//void renderDuck(const Shader& shader);
 void renderWoodpecker(const Shader& shader);
 void renderGoose(const Shader& shader);
 void renderStander(const Shader& shader);
@@ -461,39 +461,39 @@ void renderHat5();
 void renderHat6();
 void renderCloud();
 void renderParrot();
-void renderDuck();
+//void renderDuck();
 void renderWoodpecker();
 void renderGoose();
 void renderStander();
 
 void renderPaun1();
-void renderPaun2();
-void renderPaun3();
-void renderPaun4();
-void renderPaun5();
-void renderPaun6();
-void renderPaun7();
-void renderPaun8();
-void renderPaun9();
-void renderPaun10();
-void renderPaun11();
-void renderPaun12();
-void renderPaun13();
-void renderPaun14();
-void renderPaun15();
-void renderPaun16();
-void renderPaun17();
-void renderPaun18();
-void renderPaun19();
-void renderPaun20();
-void renderPaun21();
-void renderPaun22();
-void renderPaun23();
-void renderPaun24();
-void renderPaun25();
-void renderPaun26();
-void renderPaun27();
-void renderPaun28();
+//void renderPaun2();
+//void renderPaun3();
+//void renderPaun4();
+//void renderPaun5();
+//void renderPaun6();
+//void renderPaun7();
+//void renderPaun8();
+//void renderPaun9();
+//void renderPaun10();
+//void renderPaun11();
+//void renderPaun12();
+//void renderPaun13();
+//void renderPaun14();
+//void renderPaun15();
+//void renderPaun16();
+//void renderPaun17();
+//void renderPaun18();
+//void renderPaun19();
+//void renderPaun20();
+//void renderPaun21();
+//void renderPaun22();
+//void renderPaun23();
+//void renderPaun24();
+//void renderPaun25();
+//void renderPaun26();
+//void renderPaun27();
+//void renderPaun28();
 void renderBackground();
 
 
@@ -616,7 +616,7 @@ int main(int argc, char** argv)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// glfw window creation
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Exploatarea muzeului Antipa", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Explorarea muzeului Antipa", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -661,9 +661,9 @@ int main(int argc, char** argv)
 	unsigned int cloudTexture = CreateTexture(strExePath + "\\c.jpg");
 	unsigned int turkeyVuTexture = CreateTexture(strExePath + "\\Vu.jpg");
 	unsigned int parrotTexture = CreateTexture(strExePath + "\\Feather.jpg");
-	unsigned int duckTexture = CreateTexture(strExePath + "\\duck.jfif");
+	//unsigned int duckTexture = CreateTexture(strExePath + "\\duck.jfif");
 	unsigned int woodpeckerTexture = CreateTexture(strExePath + "\\woodpecker.jpg");
-	unsigned int gooseTexture = CreateTexture(strExePath + "\\goose.jpg");
+	//unsigned int gooseTexture = CreateTexture(strExePath + "\\goose.jpg");
 	unsigned int pilonTexture = CreateTexture(strExePath + "\\floor5.jpg");
 
 	unsigned int standerTexture = CreateTexture(strExePath + "\\wood.jpg");
@@ -762,7 +762,7 @@ int main(int argc, char** argv)
 		glCullFace(GL_BACK);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		/*glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
@@ -771,7 +771,7 @@ int main(int argc, char** argv)
 		glCullFace(GL_FRONT);
 		renderDuck(shadowMappingDepthShader);
 		glCullFace(GL_BACK);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
 
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -788,7 +788,7 @@ int main(int argc, char** argv)
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, gooseTexture);
+		glBindTexture(GL_TEXTURE_2D, pilonTexture);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		renderGoose(shadowMappingDepthShader);
@@ -1002,12 +1002,12 @@ int main(int argc, char** argv)
 		glDisable(GL_CULL_FACE);
 		renderScene(shadowMappingShader);
 
-		glActiveTexture(GL_TEXTURE0);
+		/*glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, duckTexture);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
-		renderDuck(shadowMappingShader);
+		renderDuck(shadowMappingShader);*/
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, woodpeckerTexture);
@@ -1024,7 +1024,7 @@ int main(int argc, char** argv)
 		renderPaun(shadowMappingShader);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, gooseTexture);
+		glBindTexture(GL_TEXTURE_2D, pilonTexture);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		glDisable(GL_CULL_FACE);
@@ -1319,16 +1319,16 @@ void renderOwl(const Shader& shader)
 	renderOwl();
 
 }
-void renderDuck(const Shader& shader)
-{
-	glm::mat4 model;
-	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(11.0f, -0.5f, 0.0f));
-	model = glm::scale(model, glm::vec3(0.5f));
-	//	model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.0f, 1.f, 0.f));
-	shader.SetMat4("model", model);
-	renderDuck();
-}
+//void renderDuck(const Shader& shader)
+//{
+//	glm::mat4 model;
+//	model = glm::mat4();
+//	model = glm::translate(model, glm::vec3(11.0f, -0.5f, 0.0f));
+//	model = glm::scale(model, glm::vec3(0.5f));
+//	//	model = glm::rotate(model, glm::radians(90.f), glm::vec3(0.0f, 1.f, 0.f));
+//	shader.SetMat4("model", model);
+//	renderDuck();
+//}
 void renderWoodpecker(const Shader& shader)
 {
 	glm::mat4 model;
@@ -3444,81 +3444,81 @@ float vertices52[82000];
 unsigned int indices52[72000];
 GLuint duckVAO, duckVBO, duckEBO;
 
-void renderDuck()
-{
-	// initialize (if necessary)
-	if (duckVAO == 0)
-	{
-
-		std::vector<float> verticess;
-		std::vector<float> indicess;
-
-
-
-		Loader.LoadFile("duck.obj");
-		objl::Mesh curMesh = Loader.LoadedMeshes[0];
-		int size = curMesh.Vertices.size();
-
-		for (int j = 0; j < curMesh.Vertices.size(); j++)
-		{
-
-			verticess.push_back((float)curMesh.Vertices[j].Position.X);
-			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
-			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
-			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
-			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
-			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
-			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
-			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
-		}
-		for (int j = 0; j < verticess.size(); j++)
-		{
-			vertices52[j] = verticess.at(j);
-		}
-
-		for (int j = 0; j < curMesh.Indices.size(); j++)
-		{
-
-			indicess.push_back((float)curMesh.Indices[j]);
-
-		}
-		for (int j = 0; j < curMesh.Indices.size(); j++)
-		{
-			indices52[j] = indicess.at(j);
-		}
-
-		glGenVertexArrays(1, &duckVAO);
-		glGenBuffers(1, &duckVBO);
-		glGenBuffers(1, &duckEBO);
-		// fill buffer
-		glBindBuffer(GL_ARRAY_BUFFER, duckVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices52), vertices52, GL_DYNAMIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, duckEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices52), &indices52, GL_DYNAMIC_DRAW);
-		// link vertex attributes
-		glBindVertexArray(duckVAO);
-		glEnableVertexAttribArray(0);
-
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-	}
-	// render Cube
-	glBindVertexArray(duckVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, treeVBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, treeEBO);
-	int indexArraySize;
-	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
-	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-}
+//void renderDuck()
+//{
+//	// initialize (if necessary)
+//	if (duckVAO == 0)
+//	{
+//
+//		std::vector<float> verticess;
+//		std::vector<float> indicess;
+//
+//
+//
+//		Loader.LoadFile("duck.obj");
+//		objl::Mesh curMesh = Loader.LoadedMeshes[0];
+//		int size = curMesh.Vertices.size();
+//
+//		for (int j = 0; j < curMesh.Vertices.size(); j++)
+//		{
+//
+//			verticess.push_back((float)curMesh.Vertices[j].Position.X);
+//			verticess.push_back((float)curMesh.Vertices[j].Position.Y);
+//			verticess.push_back((float)curMesh.Vertices[j].Position.Z);
+//			verticess.push_back((float)curMesh.Vertices[j].Normal.X);
+//			verticess.push_back((float)curMesh.Vertices[j].Normal.Y);
+//			verticess.push_back((float)curMesh.Vertices[j].Normal.Z);
+//			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.X);
+//			verticess.push_back((float)curMesh.Vertices[j].TextureCoordinate.Y);
+//		}
+//		for (int j = 0; j < verticess.size(); j++)
+//		{
+//			vertices52[j] = verticess.at(j);
+//		}
+//
+//		for (int j = 0; j < curMesh.Indices.size(); j++)
+//		{
+//
+//			indicess.push_back((float)curMesh.Indices[j]);
+//
+//		}
+//		for (int j = 0; j < curMesh.Indices.size(); j++)
+//		{
+//			indices52[j] = indicess.at(j);
+//		}
+//
+//		glGenVertexArrays(1, &duckVAO);
+//		glGenBuffers(1, &duckVBO);
+//		glGenBuffers(1, &duckEBO);
+//		// fill buffer
+//		glBindBuffer(GL_ARRAY_BUFFER, duckVBO);
+//		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices52), vertices52, GL_DYNAMIC_DRAW);
+//
+//		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, duckEBO);
+//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices52), &indices52, GL_DYNAMIC_DRAW);
+//		// link vertex attributes
+//		glBindVertexArray(duckVAO);
+//		glEnableVertexAttribArray(0);
+//
+//
+//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+//		glEnableVertexAttribArray(1);
+//		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+//		glEnableVertexAttribArray(2);
+//		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+//		glBindBuffer(GL_ARRAY_BUFFER, 0);
+//		glBindVertexArray(0);
+//	}
+//	// render Cube
+//	glBindVertexArray(duckVAO);
+//	glBindBuffer(GL_ARRAY_BUFFER, treeVBO);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, treeEBO);
+//	int indexArraySize;
+//	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
+//	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+//	glDrawArrays(GL_TRIANGLES, 0, 36);
+//	glBindVertexArray(0);
+//}
 
 float vertices50[82000];
 unsigned int indices50[72000];
@@ -3591,8 +3591,8 @@ void renderWoodpecker()
 	}
 	// render Cube
 	glBindVertexArray(woodpeckerVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, treeVBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, treeEBO);
+	glBindBuffer(GL_ARRAY_BUFFER, woodpeckerVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, woodpeckerEBO);
 	int indexArraySize;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
 	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
@@ -3671,8 +3671,8 @@ void renderGoose()
 	}
 	// render Cube
 	glBindVertexArray(gooseVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, treeVBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, treeEBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gooseVBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gooseEBO);
 	int indexArraySize;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &indexArraySize);
 	glDrawElements(GL_TRIANGLES, indexArraySize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
